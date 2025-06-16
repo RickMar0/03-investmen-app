@@ -6,6 +6,8 @@ export default function ResultsTable({ results}) {
     return <p>No results to display.</p>;
   }
 
+  const initialInvestment = results[0].valueEndOfYear - results[0].interest - results[0].annualInvestment;
+
   return (
     <table id="result">
       <thead>
@@ -18,11 +20,14 @@ export default function ResultsTable({ results}) {
         </tr>
       </thead>
       <tbody>
-        {results.map((result, idx) => {
-          // Calculate totalInterest if not present
+        {results.map((result) => {
+          
           const totalInterest = result.totalInterest !== undefined
             ? result.totalInterest
-            : result.valueEndOfYear - result.annualInvestment * result.year;
+            : result.valueEndOfYear - result.annualInvestment * result.year - initialInvestment
+          ;
+
+          const totalInvested = result.valueEndOfYear - totalInterest;
         
           return (
             <tr key={result.year}>
@@ -30,7 +35,7 @@ export default function ResultsTable({ results}) {
               <td>{formatter.format(result.valueEndOfYear)}</td>
               <td>{formatter.format(result.interest)}</td>
               <td>{formatter.format(totalInterest)}</td>
-              <td>{formatter.format(result.annualInvestment * result.year)}</td>
+              <td>{formatter.format(totalInvested)}</td>
             </tr>
           );
         })}
